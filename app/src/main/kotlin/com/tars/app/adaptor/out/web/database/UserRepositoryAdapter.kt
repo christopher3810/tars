@@ -18,6 +18,7 @@ class UserRepositoryAdapter(
         return userRepository.save(entity)
     }
 
+    //TODO : Mapper 로 바로 Domain 만드는데 이거 Factory 구조 정해지면 여긴 Entity 만 반환하도록 변경
     override fun findByEmail(email: String): User? {
         val entity = userRepository.findByEmail(email)
         return entity?.let(userMapper::toDomain)
