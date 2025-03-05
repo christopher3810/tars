@@ -1,5 +1,6 @@
 package com.tars.app.domain.factory
 
+import com.tars.app.domain.entity.UserEntity
 import com.tars.app.domain.user.User
 import com.tars.app.domain.user.vo.UserCredentials
 import com.tars.app.event.UserEvent
@@ -85,31 +86,21 @@ class UserFactory(
     /**
      * 기존 사용자 데이터로부터 User 객체 재구성
      */
-    fun reconstitute(
-        id: Long,
-        email: String,
-        hashedPassword: String,
-        ssn: String,
-        phoneNumber: String,
-        name: String,
-        address: String?,
-        birthDate: LocalDate?,
-        roles: Set<String>
-    ): User {
+    fun reconstitute(entity: UserEntity): User {
         val credentials = UserCredentials.fromExisting(
-            email = email,
-            hashedPassword = hashedPassword,
-            ssn = ssn,
-            phoneNumber = phoneNumber,
-            name = name,
-            birthDate = birthDate
+            email = entity.email,
+            hashedPassword = entity.password,
+            ssn = entity.ssn,
+            phoneNumber = entity.phoneNumber,
+            name = entity.name,
+            birthDate = entity.birthDate
         )
 
         return User.reconstitute(
-            id = id,
+            id = entity.id,
             credentials = credentials,
-            address = address,
-            roles = roles
+            address = entity.address,
+            roles = entity.roles
         )
     }
 } 

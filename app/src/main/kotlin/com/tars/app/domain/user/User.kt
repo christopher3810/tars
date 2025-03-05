@@ -4,7 +4,7 @@ import com.tars.app.common.error.ErrorMessage
 import com.tars.app.domain.user.vo.UserCredentials
 
 class User private constructor(
-    val id: Long? = null,
+    val id: Long,
     val credentials: UserCredentials,
     private var address: String?,
     private var roles: Set<String>
@@ -18,11 +18,13 @@ class User private constructor(
          * Factory를 통해서만 호출되어야 합니다.
          */
         internal fun create(
+            id: Long,
             credentials: UserCredentials,
             address: String?,
             roles: Set<String>
         ): User {
             return User(
+                id = id,
                 credentials = credentials,
                 address = address,
                 roles = roles
