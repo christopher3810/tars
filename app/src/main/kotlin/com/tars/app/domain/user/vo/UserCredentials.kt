@@ -1,6 +1,6 @@
 package com.tars.app.domain.user.vo
 
-import com.tars.app.config.error.ErrorMessage
+import com.tars.app.common.error.ErrorMessage
 import com.tars.app.util.MaskingUtil
 import com.tars.app.util.ValidationPatterns
 import org.springframework.security.crypto.bcrypt.BCrypt

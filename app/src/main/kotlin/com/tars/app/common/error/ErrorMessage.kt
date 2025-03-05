@@ -1,4 +1,4 @@
-package com.tars.app.config.error
+package com.tars.app.common.error
 
 enum class ErrorMessage(val code: String, val message: String) {
     // Validation Errors

@@ -1,15 +1,13 @@
 package com.tars.app.domain.user.vo
 
+import com.tars.app.common.error.ErrorMessage
+import com.tars.app.util.ValidationPatterns
+
 data class Email private constructor(val value: String) {
     companion object {
         fun of(email: String): Email {
-            require(isValidEmail(email)) { "Invalid email format: $email" }
+            require(ValidationPatterns.isValidEmail(email)) { ErrorMessage.INVALID_EMAIL_FORMAT.format(email) }
             return Email(email)
-        }
-
-        private fun isValidEmail(email: String): Boolean {
-            val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
-            return email.matches(emailRegex.toRegex())
         }
     }
 

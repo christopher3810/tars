@@ -1,6 +1,6 @@
 package com.tars.app.domain.user
 
-import com.tars.app.config.error.ErrorMessage
+import com.tars.app.common.error.ErrorMessage
 import com.tars.app.domain.user.vo.UserCredentials
 
 class User private constructor(
