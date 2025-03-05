@@ -24,8 +24,7 @@ class UserEventConsumer {
             }
         } catch (e: Exception) {
             log.error("Failed to process event: $event", e)
-            // 여기서 실패한 이벤트를 재시도 큐에 넣거나, 
-            // 에러 추적을 위한 저장소에 기록할 수 있습니다.
+            // 여기서 실패한 이벤트를 재시도 큐에 넣거나, 추적을위해 저장 고민.
         }
     }
 
