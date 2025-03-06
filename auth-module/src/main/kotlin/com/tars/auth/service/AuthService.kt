@@ -1,5 +1,6 @@
 package com.tars.auth.service
 
+import com.tars.auth.domain.token.builder.TokenClaim
 import com.tars.auth.dto.LoginRequest
 import com.tars.auth.dto.TokenRefreshRequest
 import com.tars.auth.dto.TokenResponse
@@ -32,9 +33,16 @@ class AuthService(
             throw BadCredentialsException(ErrorMessage.INVALID_CREDENTIALS.message)
         }
         
-        // 토큰 생성
-        val accessToken = tokenProvider.generateToken(user.email)
-        val refreshToken = tokenProvider.generateRefreshToken(user.email)
+        // 토큰 생성 (사용자 ID와 역할 정보 포함)
+        // 권한 검증용 토큰 빌더 사용
+        val accessToken = tokenProvider.createAuthorizationTokenBuilder(user.email)
+            .withClaim(TokenClaim.USER_ID.value, user.id)
+            .withClaim(TokenClaim.ROLES.value, user.roles.joinToString(","))
+            .build()
+            
+        val refreshToken = tokenProvider.createRefreshTokenBuilder(user.email)
+            .withClaim(TokenClaim.USER_ID.value, user.id)
+            .build()
         
         return TokenResponse(
             accessToken = accessToken,
@@ -61,11 +69,15 @@ class AuthService(
         val email = tokenProvider.getUsernameFromJWT(refreshToken)
         
         // 사용자 존재 확인
-        userAuthPort.findUserByEmail(email)
+        val user = userAuthPort.findUserByEmail(email)
             ?: throw BadCredentialsException("User not found for the token")
         
-        // 새 액세스 토큰 생성
-        val newAccessToken = tokenProvider.generateToken(email)
+        // 새 액세스 토큰 생성 (사용자 ID와 역할 정보 포함)
+        // 권한 검증용 토큰 빌더 사용
+        val newAccessToken = tokenProvider.createAuthorizationTokenBuilder(user.email)
+            .withClaim(TokenClaim.USER_ID.value, user.id)
+            .withClaim(TokenClaim.ROLES.value, user.roles.joinToString(","))
+            .build()
         
         return TokenResponse(
             accessToken = newAccessToken,
