@@ -1,0 +1,9 @@
+// 플러그인 리포지토리 설정
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'common' 

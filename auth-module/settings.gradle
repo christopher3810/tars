@@ -1,0 +1,13 @@
+// 플러그인 리포지토리 설정
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+
+rootProject.name = 'auth-module'
+
+// common 모듈 포함
+includeBuild('../common') 

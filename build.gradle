@@ -1,0 +1,54 @@
+// 모든 프로젝트에 적용되는 설정
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile).tap {
+        configureEach {
+            options.encoding = 'UTF-8'
+        }
+    }
+}
+
+// Gradle Wrapper 태스크 설정
+wrapper {
+    gradleVersion = '8.12.1'
+}
+
+// TARS 모듈 관련 태스크 그룹
+def tarsGroup = 'tars'
+
+// 전체 프로젝트 빌드 태스크
+tasks.register('buildAllTarsModules') {
+    description = '모든 모듈을 빌드합니다.'
+    group = tarsGroup
+
+    doLast {
+        println "Building all modules..."
+        // 모듈 빌드 순서: common -> auth-module -> app
+        ['common', 'auth-module', 'app'].each { module ->
+            exec {
+                workingDir = file(module)
+                commandLine './gradlew', 'build'
+            }
+        }
+    }
+}
+
+// 전체 프로젝트 클린 태스크
+tasks.register('cleanAllTarsModules') {
+    description = '모든 모듈을 클린합니다.'
+    group = tarsGroup
+
+    doLast {
+        println "Cleaning all modules..."
+        // 모든 모듈 클린
+        ['common', 'auth-module', 'app'].each { module ->
+            exec {
+                workingDir = file(module)
+                commandLine './gradlew', 'clean'
+            }
+        }
+    }
+} 

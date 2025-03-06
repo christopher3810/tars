@@ -1,0 +1,15 @@
+// 플러그인 관리 설정
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+// 루트 프로젝트 이름 설정
+rootProject.name = 'tars'
+
+// 서브 프로젝트 포함
+include ':app'
+include ':auth-module'
+include ':common' 

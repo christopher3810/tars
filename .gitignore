@@ -1,3 +1,7 @@
 .idea
 app/gradle/wrapper
 .DS_Store
+.gradle
+auth-module/build
+build/reports
+common/build
