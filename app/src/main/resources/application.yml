@@ -1,15 +1,17 @@
 spring:
+  config:
+    import:
+      - classpath:auth-module-default.yml
   datasource:
-    url: jdbc:postgresql://localhost:5432/tars_admin
-    username: tars_admin
-    password: admin2447
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/tars}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-
-jwt:
-  secret: ${tars_jwt_secret}
-  expirationMs: 3600000        # Access Token 만료시간 (1시간)
-  refreshExpirationMs: 86400000  # Refresh Token 만료시간 (24시간)
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
