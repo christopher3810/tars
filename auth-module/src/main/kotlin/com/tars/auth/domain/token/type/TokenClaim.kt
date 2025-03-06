@@ -1,4 +1,4 @@
-package com.tars.auth.domain.token.builder
+package com.tars.auth.domain.token.type
 
 /**
  * 토큰 클레임 키를 정의하는 enum 클래스

@@ -1,4 +1,4 @@
-package com.tars.auth.domain.token.builder
+package com.tars.auth.domain.token.type
 
 /**
  * 일회용 토큰의 목적을 정의하는 enum 클래스
