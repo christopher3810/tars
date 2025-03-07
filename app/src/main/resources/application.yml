@@ -27,3 +27,12 @@ logging:
     com.tars: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# JWT 설정
+jwt:
+  # 실제 운영 환경에서는 반드시 변경해야 함
+  secret: tarsSecretKeyForJwtAuthenticationInDevelopmentEnvironment
+  # 액세스 토큰 만료 시간 (1시간)
+  expirationMs: 3600000
+  # 리프레시 토큰 만료 시간 (24시간)
+  refreshExpirationMs: 86400000

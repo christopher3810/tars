@@ -4,6 +4,24 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    
+    // 플러그인 버전 관리
+    plugins {
+        id 'org.springframework.boot' version '3.4.0'
+        id 'io.spring.dependency-management' version '1.1.4'
+        id 'org.jetbrains.kotlin.jvm' version '1.9.25'
+        id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
+        id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.25'
+        id 'org.jetbrains.kotlin.plugin.allopen' version '1.9.25'
+    }
+}
+
+// 의존성 관리 설정
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
 }
 
 // 루트 프로젝트 이름 설정
@@ -11,5 +29,5 @@ rootProject.name = 'tars'
 
 // 서브 프로젝트 포함
 include ':app'
-include ':auth-module'
-include ':common' 
+include ':auth'
+include ':common'

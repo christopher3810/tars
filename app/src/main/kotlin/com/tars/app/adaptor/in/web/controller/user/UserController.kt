@@ -1,6 +1,6 @@
 package com.tars.app.adaptor.`in`.web.controller.user
 
-import com.tars.app.adaptor.`in`.web.controller.user.dto.UserRegistrationDto
+import com.tars.app.adaptor.`in`.web.controller.user.dto.UserRegistrationRequest
 import com.tars.app.application.user.UserRegistrationUseCase
 import com.tars.app.application.user.service.UserRegistrationService
 import io.swagger.v3.oas.annotations.Operation
@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import jakarta.validation.Valid
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("v1/user")
@@ -30,9 +31,20 @@ class UserController(
     )
     @PostMapping
     suspend fun registerUser(
-        @Valid @RequestBody req: UserRegistrationDto
+        @Valid @RequestBody req: UserRegistrationRequest
     ): ResponseEntity<UserRegistrationUseCase.Response> {
-        val response = userRegistrationService.registerUser(req)
+        // 컨트롤러 DTO를 유스케이스 Request로 변환
+        val request = UserRegistrationUseCase.Request(
+            email = req.email,
+            password = req.password,
+            ssn = req.ssn,
+            phoneNumber = req.phoneNumber,
+            name = req.name,
+            address = req.address,
+            birthDate = req.birthDate?.let { LocalDate.parse(it) }
+        )
+        
+        val response = userRegistrationService.registerUser(request)
         return ResponseEntity.ok(response)
     }
 }

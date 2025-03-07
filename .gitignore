@@ -2,6 +2,6 @@
 app/gradle/wrapper
 .DS_Store
 .gradle
-auth-module/build
+auth/build
 build/reports
 common/build

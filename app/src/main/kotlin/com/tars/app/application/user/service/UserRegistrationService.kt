@@ -1,6 +1,5 @@
 package com.tars.app.application.user.service
 
-import com.tars.app.adaptor.`in`.web.controller.user.dto.UserRegistrationDto
 import com.tars.app.application.user.UserRegistrationUseCase
 import com.tars.app.application.validator.ValidationField
 import com.tars.app.application.validator.policy.EmailDuplicationPolicy
@@ -21,23 +20,23 @@ class UserRegistrationService(
 ) : UserRegistrationUseCase {
 
     @Transactional
-    override suspend fun registerUser(dto: UserRegistrationDto): UserRegistrationUseCase.Response {
+    override suspend fun registerUser(request: UserRegistrationUseCase.Request): UserRegistrationUseCase.Response {
         return coroutineScope {
             // async 로 수행
             val validationDeferred = async(dispatcherProvider.io) {
-                validateEmailDuplication(dto.email, dto.ssn)
+                validateEmailDuplication(request.email, request.ssn)
             }
 
             // 사용자 도메인 객체 생성 (CPU 바운드)
             val user = withContext(dispatcherProvider.default) {
                 userFactory.createUser(
-                    email = dto.email,
-                    rawPassword = dto.password,
-                    ssn = dto.ssn,
-                    phoneNumber = dto.phoneNumber,
-                    name = dto.name,
-                    address = dto.address,
-                    birthDate = dto.birthDate
+                    email = request.email,
+                    rawPassword = request.password,
+                    ssn = request.ssn,
+                    phoneNumber = request.phoneNumber,
+                    name = request.name,
+                    address = request.address,
+                    birthDate = request.birthDate
                 )
             }
 
