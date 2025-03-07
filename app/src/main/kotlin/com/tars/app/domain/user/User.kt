@@ -2,7 +2,7 @@ package com.tars.app.domain.user
 
 import com.tars.common.error.ErrorMessage
 import com.tars.app.domain.user.vo.UserCredentials
-import com.tars.common.util.UserIdGenerator
+import com.tars.common.util.UserIdGeneratorCas
 
 class User private constructor(
     val id: Long,
@@ -24,7 +24,7 @@ class User private constructor(
             address: String?,
             roles: Set<String>
         ): User {
-            val userId = UserIdGenerator.generate()
+            val userId = UserIdGeneratorCas.generate()
             return User(
                 id = userId,
                 credentials = credentials,
