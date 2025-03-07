@@ -1,9 +1,7 @@
 plugins {
     id 'java-library'
     id 'org.jetbrains.kotlin.jvm' version '1.9.25'
-    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
-    id 'org.springframework.boot' version '3.2.3'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id 'maven-publish'
 }
 
 group = 'com.tars'
@@ -14,30 +12,52 @@ repositories {
     mavenCentral()
 }
 
-bootJar {
-    enabled = false
-}
-
+// jar 생성 활성화 및 설정
 jar {
     enabled = true
+    archiveBaseName = 'common'
+    archiveVersion = '0.0.1-SNAPSHOT'
+}
+
+// Maven 로컬 저장소에 배포 설정
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            
+            groupId = 'com.tars'
+            artifactId = 'common'
+            version = '0.0.1-SNAPSHOT'
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
+    // 핵심 의존성만 유지
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.16.1'
     
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // 테스트 의존성 - Kotest
+    testImplementation 'io.kotest:kotest-runner-junit5:5.8.0'
+    testImplementation 'io.kotest:kotest-assertions-core:5.8.0'
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
-        freeCompilerArgs += '-Xjsr305=strict'
         jvmTarget = '21'
     }
 }
 
+// 테스트 설정
 tasks.named('test') {
     useJUnitPlatform()
-    ignoreFailures = true
+}
+
+// 빌드 프로세스 최적화
+tasks.named('build') {
+    dependsOn 'jar'
+    finalizedBy 'publishToMavenLocal'
 }
