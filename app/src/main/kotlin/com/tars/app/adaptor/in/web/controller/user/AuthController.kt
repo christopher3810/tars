@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 /**
@@ -41,6 +42,7 @@ class AuthController(
             ApiResponse(responseCode = "401", description = "인증 실패")
         ]
     )
+    @PreAuthorize("permitAll()")
     @PostMapping("/login")
     suspend fun login(
         @Valid @RequestBody req: LoginRequest
@@ -72,6 +74,7 @@ class AuthController(
         ]
     )
     @PostMapping("/refresh")
+    @PreAuthorize("isAuthenticated()")
     suspend fun refreshToken(
         @Valid @RequestBody req: RefreshTokenRequest
     ): ResponseEntity<TokenResponse> {
@@ -91,6 +94,7 @@ class AuthController(
         ]
     )
     @PostMapping("/validate")
+    @PreAuthorize("permitAll()")
     suspend fun validateToken(
         @Valid @RequestBody req: ValidateTokenRequest
     ): ResponseEntity<Map<String, Boolean>> {

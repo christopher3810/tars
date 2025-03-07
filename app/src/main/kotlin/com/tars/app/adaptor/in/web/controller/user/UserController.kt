@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import jakarta.validation.Valid
+import org.springframework.security.access.prepost.PreAuthorize
 import java.time.LocalDate
 
 @RestController
@@ -30,6 +31,7 @@ class UserController(
         ]
     )
     @PostMapping
+    @PreAuthorize("permitAll()")
     suspend fun registerUser(
         @Valid @RequestBody req: UserRegistrationRequest
     ): ResponseEntity<UserRegistrationUseCase.Response> {
