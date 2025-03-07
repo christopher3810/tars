@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '3.2.3'
+    id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'org.jetbrains.kotlin.jvm' version '1.9.25'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
@@ -64,6 +64,9 @@ dependencies {
 
     // 데이터베이스 관련 의존성
     runtimeOnly 'org.postgresql:postgresql'
+    
+    // H2 데이터베이스 (테스트용)
+    testRuntimeOnly 'com.h2database:h2'
 
     // 테스트 관련 의존성
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
