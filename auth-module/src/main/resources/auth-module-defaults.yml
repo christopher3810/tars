@@ -1,0 +1,4 @@
+jwt:
+  secret: defaultSecretKeyForJwtAuthenticationPleaseOverrideInProduction
+  expirationMs: 3600000
+  refreshExpirationMs: 86400000 
