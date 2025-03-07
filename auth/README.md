@@ -64,31 +64,27 @@ dependencies {
 토큰 관련 모든 기능의 진입점입니다. 내부 구현을 추상화하여 간단한 인터페이스를 제공합니다.
 
 ```kotlin
-class TokenFacade(jwtConfig: JwtConfig = JwtConfig.standard) {
-    // 토큰 생성, 검증, 파싱 등의 메서드를 제공
-    
-    companion object {
-        fun standard(): TokenFacade
-        fun custom(configCustomizer: JwtConfig.Builder.() -> Unit): TokenFacade
-    }
+class TokenFacade(jwtConfig: JwtConfig = JwtConfig.standard())
+
+companion object {
+    fun standard(): TokenFacade
+    fun custom(configBlock: JwtConfigBuilder.() -> Unit): TokenFacade
 }
 ```
 
 ### JwtConfig
 
-JWT 관련 설정을 관리하는 클래스입니다. 빌더 패턴을 지원하여 설정을 유연하게 커스터마이징할 수 있습니다.
+JWT 설정을 위한 인터페이스입니다. 정적 팩토리 메서드를 통해 표준 설정 또는 커스텀 설정을 생성할 수 있습니다.
 
 ```kotlin
-data class JwtConfig(
-    val secret: String = "defaultSecretKeyForJwtAuthenticationPleaseOverrideInProduction",
-    val expirationMs: Long = 3600000L, // 1시간
-    val refreshExpirationMs: Long = 86400000L // 24시간
-) {
-    // 빌더 클래스 및 메서드 제공
+interface JwtConfig {
+    val secret: String
+    val expirationMs: Long
+    val refreshExpirationMs: Long
     
     companion object {
-        val standard: JwtConfig
-        fun builder(): Builder
+        fun standard(): JwtConfig
+        fun builder(): JwtConfigBuilder
     }
 }
 ```
@@ -126,7 +122,7 @@ data class UserTokenInfo(
 ### TokenFacade 인스턴스 생성
 
 ```kotlin
-// 기본 설정 사용
+// 표준 설정 사용
 val tokenFacade = TokenFacade.standard()
 
 // 커스텀 설정 사용
@@ -136,8 +132,6 @@ val tokenFacade = TokenFacade.custom {
     refreshExpirationMs(604800000L) // 7일
 }
 ```
-
-> 현재 custom의 경우 3가지 필드만 받는데 추후 확장할 예정
 
 ### 토큰 생성
 
@@ -179,15 +173,43 @@ val newTokenResponse = tokenFacade.refreshToken(refreshToken)
 val newAccessToken = newTokenResponse.accessToken
 ```
 
+## JWT 설정 관리
+
+이 라이브러리는 다양한 방식으로 JWT 설정을 관리할 수 있도록 유연한 구조를 제공합니다:
+
+### 표준 JWT 설정
+
+기본 설정은 개발 및 테스트 환경에 적합한 값으로 미리 구성되어 있습니다:
+
+```kotlin
+val jwtConfig = JwtConfig.standard()
+```
+
+이 설정은 다음과 같은 기본값을 제공합니다:
+- 시크릿 키: 기본 개발용 시크릿 (운영 환경에서는 반드시 변경 필요)
+- 액세스 토큰 만료 시간: 1시간 (3,600,000ms)
+- 리프레시 토큰 만료 시간: 24시간 (86,400,000ms)
+
+### 커스텀 JWT 설정
+
+빌더 패턴을 사용하여 JWT 설정을 커스터마이징할 수 있습니다:
+
+```kotlin
+val jwtConfig = JwtConfig.builder()
+    .secret("your-custom-secret-key")
+    .expirationMs(1800000L) // 30분
+    .refreshExpirationMs(604800000L) // 7일
+    .build()
+```
+
 ## 보안 권장사항
 
-- 실제 운영 환경에서는 반드시 강력한 시크릿 키를 사용.
-  - Hms, vault, 등 시크릿관리를 별도로하는게 더 좋음.
+- 실제 운영 환경에서는 반드시 강력한 시크릿 키를 사용하세요.
+  - 클라우드 서비스의 시크릿 관리 도구(AWS Secrets Manager, HashiCorp Vault 등)를 활용하는 것을 권장합니다.
 - 토큰 만료 시간은 애플리케이션의 보안 요구사항에 맞게 설정하세요.
-  - 만료시간은 프로젝트별로 특정 상황에 따라서 충분히 고려하고 설정하자.
+  - 액세스 토큰은 짧게, 리프레시 토큰은 적절하게 설정하여 보안과 사용자 경험 사이의 균형을 맞추세요.
 - 리프레시 토큰은 서버 측에서 안전하게 관리하세요.
 - 민감한 정보는 토큰 클레임에 포함하지 마세요.
-
 
 ## 라이센스
 
