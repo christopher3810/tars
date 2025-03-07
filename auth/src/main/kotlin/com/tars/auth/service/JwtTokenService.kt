@@ -11,7 +11,7 @@ import com.tars.auth.exception.TokenException
  */
 class JwtTokenService(
     private val tokenProvider: TokenProvider,
-    private val jwtConfig: JwtConfig = JwtConfig.standard
+    private val jwtConfig: JwtConfig = JwtConfig.standard()
 ) {
     
     /**
