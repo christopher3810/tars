@@ -2,6 +2,7 @@
 allprojects {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
 
     tasks.withType(JavaCompile).tap {
@@ -26,11 +27,40 @@ tasks.register('buildAllTarsModules') {
 
     doLast {
         println "Building all modules..."
-        // 모듈 빌드 순서: common -> auth-module -> app
-        ['common', 'auth-module', 'app'].each { module ->
-            exec {
-                workingDir = file(module)
-                commandLine './gradlew', 'build'
+        
+        // 1. common 모듈 빌드 및 로컬 Maven 저장소에 배포
+        println "Building common module and publishing to local Maven repository..."
+        exec {
+            workingDir = file('common')
+            // 상대 경로 대신 루트 프로젝트의 gradlew 사용
+            if (System.properties['os.name'].toLowerCase().contains('windows')) {
+                commandLine "${rootDir}/gradlew.bat", 'clean', 'build', 'publishToMavenLocal'
+            } else {
+                commandLine "${rootDir}/gradlew", 'clean', 'build', 'publishToMavenLocal'
+            }
+        }
+        
+        // 2. auth-module 빌드 (common 의존성 포함)
+        println "Building auth-module..."
+        exec {
+            workingDir = file('auth-module')
+            // 상대 경로 대신 루트 프로젝트의 gradlew 사용
+            if (System.properties['os.name'].toLowerCase().contains('windows')) {
+                commandLine "${rootDir}/gradlew.bat", 'clean', 'build'
+            } else {
+                commandLine "${rootDir}/gradlew", 'clean', 'build'
+            }
+        }
+        
+        // 3. app 모듈 빌드 (common, auth-module 의존성 포함)
+        println "Building app module..."
+        exec {
+            workingDir = file('app')
+            // 상대 경로 대신 루트 프로젝트의 gradlew 사용
+            if (System.properties['os.name'].toLowerCase().contains('windows')) {
+                commandLine "${rootDir}/gradlew.bat", 'clean', 'build'
+            } else {
+                commandLine "${rootDir}/gradlew", 'clean', 'build'
             }
         }
     }
@@ -44,10 +74,34 @@ tasks.register('cleanAllTarsModules') {
     doLast {
         println "Cleaning all modules..."
         // 모든 모듈 클린
-        ['common', 'auth-module', 'app'].each { module ->
+        ['app', 'auth-module', 'common'].each { module ->
             exec {
                 workingDir = file(module)
-                commandLine './gradlew', 'clean'
+                // 상대 경로 대신 루트 프로젝트의 gradlew 사용
+                if (System.properties['os.name'].toLowerCase().contains('windows')) {
+                    commandLine "${rootDir}/gradlew.bat", 'clean'
+                } else {
+                    commandLine "${rootDir}/gradlew", 'clean'
+                }
+            }
+        }
+    }
+}
+
+// common 모듈 빌드 및 배포 태스크
+tasks.register('buildCommon') {
+    description = 'common 모듈을 빌드하고 로컬 Maven 저장소에 배포합니다.'
+    group = tarsGroup
+
+    doLast {
+        println "Building common module and publishing to local Maven repository..."
+        exec {
+            workingDir = file('common')
+            // 상대 경로 대신 루트 프로젝트의 gradlew 사용
+            if (System.properties['os.name'].toLowerCase().contains('windows')) {
+                commandLine "${rootDir}/gradlew.bat", 'clean', 'build', 'publishToMavenLocal'
+            } else {
+                commandLine "${rootDir}/gradlew", 'clean', 'build', 'publishToMavenLocal'
             }
         }
     }
