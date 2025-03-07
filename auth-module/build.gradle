@@ -12,6 +12,7 @@ sourceCompatibility = '21'
 
 repositories {
     mavenCentral()
+    mavenLocal() // 로컬 Maven 저장소 추가
 }
 
 bootJar {
@@ -20,6 +21,8 @@ bootJar {
 
 jar {
     enabled = true
+    // common 모듈의 클래스들을 포함하지 않음 (의존성으로 사용)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 dependencies {
@@ -30,6 +33,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    
+    // Jakarta Servlet 의존성 추가
+    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     
     // JWT 관련 의존성
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
