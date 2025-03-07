@@ -5,7 +5,7 @@ import com.tars.auth.dto.TokenResponse
 import org.springframework.stereotype.Component
 
 /**
- * auth TokenFacade를 app 모듈에서 사용하기 위한 어댑터
+ * auth TokenFacade 를 app 모듈에서 사용하기 위한 어댑터
  */
 @Component
 class TokenServiceAdapter(

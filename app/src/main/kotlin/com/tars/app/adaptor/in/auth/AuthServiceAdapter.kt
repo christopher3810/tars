@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component
 /**
  * 인증 모듈의 기능을 애플리케이션 모듈에서 사용할 수 있도록 하는 어댑터
  * 
- * 이 어댑터는 auth 모듈의 TokenFacade를 사용하여 인증 관련 기능을 제공합니다.
- * app 모듈의 다른 컴포넌트에서 이 어댑터를 통해 인증 기능을 사용할 수 있습니다.
+ * 이 어댑터는 auth 모듈의 TokenFacade 를 사용하여 인증 관련 기능을 제공.
  */
 @Component
 class AuthServiceAdapter(
@@ -33,12 +32,8 @@ class AuthServiceAdapter(
         roles: Set<String>, 
         hashedPassword: String
     ): TokenResponse {
-        // 비밀번호 검증
-        if (!passwordEncoder.matches(password, hashedPassword)) {
-            throw IllegalArgumentException("Invalid credentials")
-        }
-        
-        // 토큰 생성
+
+        require(passwordEncoder.matches(password, hashedPassword)) { "Invalid credentials" }
         return tokenFacade.generateTokens(userId, email, roles)
     }
     
