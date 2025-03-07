@@ -6,6 +6,8 @@ import com.tars.app.application.validator.policy.EmailDuplicationPolicy
 import com.tars.app.application.validator.policy.PolicyBuilder
 import com.tars.app.config.CoroutineDispatcherProvider
 import com.tars.app.domain.factory.UserFactory
+import com.tars.app.event.UserEvent
+import com.tars.app.outport.event.EventPublisherPort
 import com.tars.app.outport.user.UserRepositoryPort
 import kotlinx.coroutines.*
 import org.springframework.stereotype.Service
@@ -16,7 +18,8 @@ class UserRegistrationService(
     private val userRepositoryPort: UserRepositoryPort,
     private val userFactory: UserFactory,
     private val emailDuplicationPolicy: EmailDuplicationPolicy,
-    private val dispatcherProvider: CoroutineDispatcherProvider
+    private val dispatcherProvider: CoroutineDispatcherProvider,
+    private val eventPublisher: EventPublisherPort
 ) : UserRegistrationUseCase {
 
     @Transactional
@@ -44,12 +47,31 @@ class UserRegistrationService(
             validationDeferred.await()
 
             // DB 저장 (IO 바운드)
-            val savedUser = withContext(dispatcherProvider.io) {
+            val savedEntity = withContext(dispatcherProvider.io) {
                 userRepositoryPort.save(user)
             }
 
-            UserRegistrationUseCase.Response(savedUser?.id)
+            // 엔티티가 저장되었다면 ID를 가져오고, 아니면 null을 반환
+            val userId = savedEntity?.id
+
+            // 저장이 완료된 후 도메인 이벤트 발행
+            withContext(dispatcherProvider.default) {
+                if (userId != null) {
+                    publishUserCreatedEvent(request.email, request.name)
+                }
+            }
+
+            UserRegistrationUseCase.Response(userId)
         }
+    }
+
+    private fun publishUserCreatedEvent(email: String, name: String) {
+        eventPublisher.publish(
+            UserEvent.UserCreated(
+                email = email,
+                name = name
+            )
+        )
     }
 
     private suspend fun validateEmailDuplication(email: String, ssn: String) {

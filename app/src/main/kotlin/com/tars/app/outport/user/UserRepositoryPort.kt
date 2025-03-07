@@ -11,8 +11,8 @@ interface UserRepositoryPort {
 
     fun save(userDomain: User): UserEntity?
 
-    fun findByEmail(email: String): User?
+    fun findByEmail(email: String): UserEntity?
 
-    fun findById(id: Long): User?
+    fun findById(id: Long): UserEntity?
 
 }

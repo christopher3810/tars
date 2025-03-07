@@ -4,6 +4,7 @@ import com.tars.app.adaptor.`in`.auth.AuthServiceAdapter
 import com.tars.app.application.exception.BusinessException
 import com.tars.app.application.user.LoginUseCase
 import com.tars.app.config.CoroutineDispatcherProvider
+import com.tars.app.domain.factory.UserFactory
 import com.tars.app.outport.user.UserRepositoryPort
 import com.tars.common.error.ErrorMessage
 import kotlinx.coroutines.withContext
@@ -20,6 +21,7 @@ import java.net.SocketTimeoutException
 class LoginService(
     private val authServiceAdapter: AuthServiceAdapter,
     private val userRepositoryPort: UserRepositoryPort,
+    private val userFactory: UserFactory,
     private val dispatcherProvider: CoroutineDispatcherProvider
 ) : LoginUseCase {
 
@@ -35,9 +37,14 @@ class LoginService(
     override suspend fun login(request: LoginUseCase.Request): LoginUseCase.Response {
         return withContext(dispatcherProvider.io) {
             try {
-                // 사용자 조회
-                val user = userRepositoryPort.findByEmail(request.email)
+                // 사용자 엔티티 조회
+                val userEntity = userRepositoryPort.findByEmail(request.email)
                     ?: throw BusinessException(ErrorMessage.INVALID_CREDENTIALS)
+                
+                // 엔티티를 도메인 객체로 변환 (Factory를 통해 도메인 객체 재구성)
+                val user = withContext(dispatcherProvider.default) {
+                    userFactory.reconstitute(userEntity)
+                }
                 
                 // 로그인 처리 및 토큰 생성
                 val tokenResponse = authServiceAdapter.login(
@@ -56,6 +63,7 @@ class LoginService(
                     refreshToken = tokenResponse.refreshToken,
                     expiresIn = tokenResponse.expiresIn
                 )
+
             } catch (e: Exception) {
                 log.error("로그인 처리 중 오류 발생", e)
                 when (e) {

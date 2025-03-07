@@ -86,7 +86,7 @@ class UserFactory(
      * 기존 사용자 데이터로부터 User 객체 재구성
      */
     fun reconstitute(entity: UserEntity): User {
-        val credentials = UserCredentials.fromExisting(
+        val credentials = UserCredentials.reconstitute(
             email = entity.email,
             hashedPassword = entity.password,
             ssn = entity.ssn,

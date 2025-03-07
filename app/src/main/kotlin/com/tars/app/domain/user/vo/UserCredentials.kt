@@ -40,7 +40,7 @@ data class UserCredentials private constructor(
             )
         }
 
-        fun fromExisting(
+        fun reconstitute(
             email: String,
             hashedPassword: String,
             ssn: String,
