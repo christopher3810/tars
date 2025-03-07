@@ -14,23 +14,11 @@ TARS 프로젝트의 Common Module은 여러 모듈에서 공통으로 사용되
 
 ## 주요 기능
 
-Common Module은 다음과 같은 주요 기능을 제공합니다:
+Common Module은 다음과 같은 주요 기능을 제공
 
 1. **오류 메시지 관리**: 표준화된 오류 메시지 정의 및 관리
 2. **예외 처리 유틸리티**: 일관된 예외 응답 형식 제공
 3. **유틸리티 클래스**: 다양한 유틸리티 기능 (ID 생성 등)
-
-## 모듈 구조
-
-```
-com.tars.common
-├── error
-│   └── ErrorMessage.kt - 표준화된 오류 메시지 열거형
-├── exception
-│   └── ErrorResponse.kt - API 오류 응답 데이터 클래스
-└── util
-    └── UserIdGenerator.kt - 사용자 ID 생성 유틸리티
-```
 
 ## 테스트
 
@@ -42,9 +30,16 @@ Common Module의 테스트는 Kotest 프레임워크를 사용하여 describe-co
 
 프로젝트의 `build.gradle` 파일에 Common Module 의존성을 추가합니다:
 
+현재는 local maven 을 통해서 받는 방식으로 하기 때문에 gradle task 에서 로컬 배포후 받아서 쓰는 방식으로
+사용하고 있습니다
+
+아래 스냅샷은 예시이고 local maven 에 배포한 버전 기반으로 가져가면됩니다.
+
+jit pack 같은건 나중에 고려
+
 ```gradle
 dependencies {
-    implementation project(':common')
+     implementation('com.tars:common:0.0.1-SNAPSHOT')
     // 기타 의존성...
 }
 ```
@@ -84,12 +79,10 @@ val errorResponse = ErrorResponse(
 
 고유한 사용자 ID를 생성할 때 UserIdGenerator를 사용할 수 있습니다:
 
-```kotlin
-import com.tars.common.util.UserIdGenerator
+sync 인 타입과 cas를 일일히 하는 타입 두가지
 
-// 10자리 고유 사용자 ID 생성
-val userId = UserIdGenerator.generate()
+1. UserIdGeneratorCas
+2. UserIdGeneratorSync
 
-// ID 유효성 검증
-val isValid = UserIdGenerator.isValid(userId)
-``` 
+상황에 맞게 사용하면 됩니다.
+
