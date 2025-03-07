@@ -1,140 +1,193 @@
 # TARS Auth Module
 
-TARS 프로젝트의 Auth Module은 JWT 기반 토큰 관리 기능을 제공하는 독립적인 라이브러리 모듈입니다. 이 모듈은 JWT 토큰 생성, 검증, 파싱 등의 기능을 제공하며, 다른 모듈에서 쉽게 통합하여 사용할 수 있도록 설계되었습니다.
+TARS 프로젝트의 Auth Module은 JWT 기반 토큰 관리 기능을 제공하는 독립적인 Kotlin 라이브러리입니다. Spring 의존성 없이 순수 Kotlin으로 작성되어 어떤 JVM 기반 프로젝트에서도 쉽게 사용할 수 있습니다.
 
 ## 주요 기능
 
-- JWT 토큰 생성 및 검증
-- 리프레시 토큰 관리
-- 토큰 기반 사용자 정보 추출
-- 다양한 토큰 타입 지원 (액세스, 리프레시, 권한, 일회용)
+- JWT 액세스 토큰 및 리프레시 토큰 생성
+- 토큰 검증 및 파싱
+- 토큰에서 사용자 정보 추출
+- 유연한 설정 옵션 (토큰 만료 시간, 시크릿 키 등)
 
 ## 기술 스택
 
 - Kotlin 1.9.25
 - JJWT (JSON Web Token) 0.11.5
 - Jackson (JSON 처리)
-- JUnit 5 (테스트)
 
-## 모듈 구조
+## 의존성 추가 방법
 
-Auth 다음과 같은 패키지 구조로 구성되어 있습니다:
+현재 이 라이브러리는 Maven Local Repository를 통해 배포되어 있습니다. 프로젝트에 다음과 같이 의존성을 추가할 수 있습니다:
 
-```
-auth/
-├── facade/           # 외부에 노출되는 인터페이스
-│   └── TokenFacade.kt  # 토큰 관련 기능을 제공하는 Facade 클래스
-├── service/          # 내부 서비스 구현체
-│   ├── JwtTokenService.kt  # 토큰 서비스 구현체
-│   └── TokenProvider.kt    # 토큰 생성 및 검증 서비스
-├── domain/           # 도메인 모델 및 비즈니스 로직
-│   └── token/        # 토큰 관련 도메인 모델
-│       ├── builder/  # 토큰 빌더 패턴 구현체
-│       │   ├── TokenBuilder.kt          # 토큰 빌더 인터페이스
-│       │   ├── AbstractTokenBuilder.kt  # 추상 토큰 빌더
-│       │   ├── AccessTokenBuilder.kt    # 액세스 토큰 빌더
-│       │   ├── RefreshTokenBuilder.kt   # 리프레시 토큰 빌더
-│       │   ├── AuthorizationTokenBuilder.kt  # 권한 토큰 빌더
-│       │   └── OneTimeTokenBuilder.kt   # 일회용 토큰 빌더
-│       └── type/     # 토큰 관련 타입 정의
-│           ├── TokenType.kt     # 토큰 타입 열거형
-│           ├── TokenClaim.kt    # 토큰 클레임 열거형
-│           └── TokenPurpose.kt  # 토큰 목적 열거형
-├── config/           # 설정 클래스
-│   └── JwtConfig.kt  # JWT 관련 설정
-├── dto/              # 데이터 전송 객체
-│   ├── TokenResponse.kt       # 토큰 응답 DTO
-│   ├── UserTokenInfo.kt       # 사용자 토큰 정보 DTO
-│   └── TokenRefreshRequest.kt # 토큰 갱신 요청 DTO
-└── exception/        # 예외 클래스
-    ├── TokenException.kt          # 토큰 관련 예외
-    └── AuthenticationException.kt # 인증 관련 예외
-```
-
-## 사용 방법
-
-### 1. 의존성 추가
-
-Gradle 프로젝트에 다음과 같이 의존성을 추가합니다:
-
-```gradle
-implementation 'com.tars:auth:0.0.1-SNAPSHOT'
-```
-
-### 2. TokenFacade 인스턴스 생성
-
-TokenFacade는 모듈의 주요 진입점으로, 다음과 같이 인스턴스를 생성할 수 있습니다:
+### Gradle (Kotlin DSL)
 
 ```kotlin
-// 기본 설정으로 생성
-val tokenFacade = TokenFacade.createDefault()
+repositories {
+    mavenLocal()
+}
 
-// 커스텀 설정으로 생성
-val tokenFacade = TokenFacade.create(
-    secret = "yourSecretKey",
-    expirationMs = 3600000L, // 1시간
-    refreshExpirationMs = 86400000L // 24시간
+dependencies {
+    implementation("com.tars:auth:0.0.1-SNAPSHOT")
+}
+```
+
+### Gradle (Groovy DSL)
+
+```groovy
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'com.tars:auth:0.0.1-SNAPSHOT'
+}
+```
+
+### Maven
+
+```xml
+<dependency>
+    <groupId>com.tars</groupId>
+    <artifactId>auth</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
+```
+
+> **참고**: 향후 JitPack과 같은 외부 라이브러리 배포 플랫폼을 통해 더 쉽게 의존성을 관리할 수 있도록 개선할 예정입니다.
+
+## 주요 인터페이스
+
+이 라이브러리는 외부에서 사용할 수 있는 간단한 인터페이스를 제공합니다. 모든 기능은 `TokenFacade` 클래스를 통해 접근할 수 있습니다.
+
+### TokenFacade
+
+토큰 관련 모든 기능의 진입점입니다. 내부 구현을 추상화하여 간단한 인터페이스를 제공합니다.
+
+```kotlin
+class TokenFacade(jwtConfig: JwtConfig = JwtConfig.standard) {
+    // 토큰 생성, 검증, 파싱 등의 메서드를 제공
+    
+    companion object {
+        fun standard(): TokenFacade
+        fun custom(configCustomizer: JwtConfig.Builder.() -> Unit): TokenFacade
+    }
+}
+```
+
+### JwtConfig
+
+JWT 관련 설정을 관리하는 클래스입니다. 빌더 패턴을 지원하여 설정을 유연하게 커스터마이징할 수 있습니다.
+
+```kotlin
+data class JwtConfig(
+    val secret: String = "defaultSecretKeyForJwtAuthenticationPleaseOverrideInProduction",
+    val expirationMs: Long = 3600000L, // 1시간
+    val refreshExpirationMs: Long = 86400000L // 24시간
+) {
+    // 빌더 클래스 및 메서드 제공
+    
+    companion object {
+        val standard: JwtConfig
+        fun builder(): Builder
+    }
+}
+```
+
+### 데이터 클래스
+
+#### TokenResponse
+
+토큰 생성 및 갱신 결과를 나타내는 데이터 클래스입니다.
+
+```kotlin
+data class TokenResponse(
+    val accessToken: String,
+    val refreshToken: String,
+    val tokenType: String = "Bearer",
+    val expiresIn: Long = 3600 // 기본 만료 시간 1시간 (초 단위)
 )
 ```
 
-### 3. 토큰 생성
+#### UserTokenInfo
 
-사용자 정보를 기반으로 토큰을 생성합니다:
+토큰에 포함될 사용자 정보를 나타내는 데이터 클래스입니다.
+
+```kotlin
+data class UserTokenInfo(
+    val id: Long,
+    val email: String,
+    val roles: Set<String> = emptySet(),
+    val additionalClaims: Map<String, Any> = emptyMap()
+)
+```
+
+## 사용 예시
+
+### TokenFacade 인스턴스 생성
+
+```kotlin
+// 기본 설정 사용
+val tokenFacade = TokenFacade.standard()
+
+// 커스텀 설정 사용
+val tokenFacade = TokenFacade.custom {
+    secret("your-secure-secret-key")
+    expirationMs(1800000L) // 30분
+    refreshExpirationMs(604800000L) // 7일
+}
+```
+
+> 현재 custom의 경우 3가지 필드만 받는데 추후 확장할 예정
+
+### 토큰 생성
 
 ```kotlin
 val tokenResponse = tokenFacade.generateTokens(
     userId = 123L,
     email = "user@example.com",
     roles = setOf("USER", "ADMIN"),
-    additionalClaims = mapOf("customClaim" to "value")
+    additionalClaims = mapOf("organization" to "TARS")
 )
 
 val accessToken = tokenResponse.accessToken
 val refreshToken = tokenResponse.refreshToken
+val expiresIn = tokenResponse.expiresIn // 만료 시간(초)
 ```
 
-### 4. 토큰 검증
-
-토큰의 유효성을 검증합니다:
+### 토큰 검증
 
 ```kotlin
-val isValid = tokenFacade.validateToken(token)
+val isValid = tokenFacade.validateToken(accessToken)
 ```
 
-### 5. 토큰에서 사용자 정보 추출
-
-토큰에서 사용자 정보를 추출합니다:
+### 토큰에서 정보 추출
 
 ```kotlin
 // 전체 사용자 정보 추출
-val userInfo = tokenFacade.getUserInfoFromToken(token)
+val userInfo = tokenFacade.getUserInfoFromToken(accessToken)
 
 // 특정 정보 추출
-val userId = tokenFacade.getUserIdFromToken(token)
-val email = tokenFacade.getUserEmailFromToken(token)
-val roles = tokenFacade.getUserRolesFromToken(token)
+val userId = tokenFacade.getUserIdFromToken(accessToken)
+val email = tokenFacade.getUserEmailFromToken(accessToken)
+val roles = tokenFacade.getUserRolesFromToken(accessToken)
 ```
 
-### 6. 토큰 갱신
-
-리프레시 토큰을 사용하여 액세스 토큰을 갱신합니다:
+### 토큰 갱신
 
 ```kotlin
 val newTokenResponse = tokenFacade.refreshToken(refreshToken)
 val newAccessToken = newTokenResponse.accessToken
 ```
 
-## 주의사항
+## 보안 권장사항
 
-- 실제 운영 환경에서는 반드시 안전한 시크릿 키를 사용하세요.
-- 토큰의 만료 시간은 보안 요구사항에 맞게 설정하세요.
-- 리프레시 토큰은 안전하게 저장하고 관리해야 합니다.
+- 실제 운영 환경에서는 반드시 강력한 시크릿 키를 사용.
+  - Hms, vault, 등 시크릿관리를 별도로하는게 더 좋음.
+- 토큰 만료 시간은 애플리케이션의 보안 요구사항에 맞게 설정하세요.
+  - 만료시간은 프로젝트별로 특정 상황에 따라서 충분히 고려하고 설정하자.
+- 리프레시 토큰은 서버 측에서 안전하게 관리하세요.
+- 민감한 정보는 토큰 클레임에 포함하지 마세요.
 
-## 확장 가능성
-
-- 토큰 저장소 구현을 통한 토큰 블랙리스트 관리
-- 비대칭 키(RSA) 기반 토큰 서명 지원
-- 토큰 회전(Rotation) 정책 구현
 
 ## 라이센스
 
