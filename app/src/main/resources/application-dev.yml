@@ -14,6 +14,12 @@ spring:
         show_sql: true
     open-in-view: false
 
+# JWT 설정
+jwt:
+  secret: devSecretKeyForJwtAuthenticationInDevelopmentEnvironment
+  expirationMs: 3600000        # 액세스 토큰 만료 시간 (1시간)
+  refreshExpirationMs: 86400000  # 리프레시 토큰 만료 시간 (24시간)
+
 # 서버 설정
 server:
   port: 8080
@@ -26,4 +32,4 @@ logging:
     root: INFO
     com.tars: DEBUG
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE 

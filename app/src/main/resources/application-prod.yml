@@ -6,13 +6,17 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate  # 프로덕션에서는 validate 모드 사용
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-        show_sql: true
     open-in-view: false
+
+# JWT 설정
+jwt:
+  secret: ${JWT_SECRET:tarsSecretKeyForJwtAuthenticationInProductionEnvironment}
+  expirationMs: 3600000
+  refreshExpirationMs: 86400000
 
 # 서버 설정
 server:
@@ -23,7 +27,7 @@ server:
 # 로깅 설정
 logging:
   level:
-    root: INFO
-    com.tars: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    root: WARN
+    com.tars: INFO
+  file:
+    name: /var/log/tars/application.log 
