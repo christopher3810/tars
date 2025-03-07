@@ -16,6 +16,7 @@ class UserFactory(
     /**
      * 신규 사용자 생성
      * ROLE_USER 부여, 생성 이벤트가 발행.
+     * 10자리 고유 ID는 User.create 내부에서 자동 생성.
      */
     fun createUser(
         email: String,
@@ -26,7 +27,6 @@ class UserFactory(
         address: String? = null,
         birthDate: LocalDate? = null
     ): User {
-        // UserCredentials Value Object 생성
         val credentials = UserCredentials.create(
             email = email,
             rawPassword = rawPassword,
@@ -36,7 +36,6 @@ class UserFactory(
             birthDate = birthDate
         )
 
-        // User 애그리거트 생성
         val user = User.create(
             credentials = credentials,
             address = address,

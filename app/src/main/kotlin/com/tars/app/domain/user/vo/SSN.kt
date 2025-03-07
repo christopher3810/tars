@@ -1,6 +1,6 @@
 package com.tars.app.domain.user.vo
 
-import com.tars.app.common.error.ErrorMessage
+import com.tars.common.error.ErrorMessage
 import com.tars.app.util.ValidationPatterns
 
 data class SSN private constructor(val value: String) {

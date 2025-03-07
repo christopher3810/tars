@@ -1,7 +1,8 @@
 package com.tars.app.domain.user
 
-import com.tars.app.common.error.ErrorMessage
+import com.tars.common.error.ErrorMessage
 import com.tars.app.domain.user.vo.UserCredentials
+import com.tars.common.util.UserIdGenerator
 
 class User private constructor(
     val id: Long,
@@ -15,16 +16,17 @@ class User private constructor(
 
         /**
          * 신규 User 생성
-         * Factory를 통해서만 호출되어야 합니다.
+         * Factory 를 통해서만 호출되어야 한다.
+         * UserIdGenerator 를 사용하여 10자리 고유 ID를 생성.
          */
         internal fun create(
-            id: Long,
             credentials: UserCredentials,
             address: String?,
             roles: Set<String>
         ): User {
+            val userId = UserIdGenerator.generate()
             return User(
-                id = id,
+                id = userId,
                 credentials = credentials,
                 address = address,
                 roles = roles
@@ -33,7 +35,6 @@ class User private constructor(
 
         /**
          * 영속성 저장소에서 로드된 데이터로 User 재구성
-         * Factory를 통해서만 호출되어야 합니다.
          */
         internal fun reconstitute(
             id: Long,
