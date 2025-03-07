@@ -6,12 +6,14 @@ import com.tars.auth.domain.token.type.TokenPurpose
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import java.security.Key
 
 @Component
+@Qualifier("authModuleTokenProvider")
 class TokenProvider(
-    private final val jwtConfig: JwtConfig
+    @Qualifier("authModuleJwtConfig") private val jwtConfig: JwtConfig
 ) {
     // 문자열을 바이트 배열로 변환하여 적절한 Key 인스턴스 생성
     private val key: Key = Keys.hmacShaKeyFor(jwtConfig.secret.toByteArray(Charsets.UTF_8))

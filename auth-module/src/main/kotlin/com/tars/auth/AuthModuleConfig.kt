@@ -3,6 +3,10 @@ package com.tars.auth
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.PropertySource
+import org.springframework.context.annotation.PropertySources
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer
+import org.springframework.context.annotation.Bean
 
 /**
  * 인증 모듈의 설정 클래스
@@ -17,4 +21,16 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @ComponentScan(basePackages = ["com.tars.auth"])
 @ConfigurationPropertiesScan(basePackages = ["com.tars.auth"])
-class AuthModuleConfig 
+@PropertySources(
+    PropertySource("classpath:auth-module-defaults.yml", ignoreResourceNotFound = true)
+)
+class AuthModuleConfig {
+    
+    /**
+     * YAML 파일을 처리하기 위한 PropertySourcesPlaceholderConfigurer 빈 등록
+     */
+    @Bean
+    fun propertySourcesPlaceholderConfigurer(): PropertySourcesPlaceholderConfigurer {
+        return PropertySourcesPlaceholderConfigurer()
+    }
+} 

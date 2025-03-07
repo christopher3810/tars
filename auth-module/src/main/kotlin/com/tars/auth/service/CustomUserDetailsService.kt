@@ -2,6 +2,7 @@ package com.tars.auth.service
 
 import com.tars.auth.port.output.UserAuthPort
 import com.tars.common.error.ErrorMessage
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -9,8 +10,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
+@Qualifier("authModuleUserDetailsService")
 class CustomUserDetailsService(
-    private val userAuthPort: UserAuthPort
+    @Qualifier("appUserAuthAdapter") private val userAuthPort: UserAuthPort
 ) : UserDetailsService {
 
     /**

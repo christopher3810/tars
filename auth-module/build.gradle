@@ -2,8 +2,9 @@ plugins {
     id 'java-library'
     id 'org.jetbrains.kotlin.jvm' version '1.9.25'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
-    id 'org.springframework.boot' version '3.2.3'
+    id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'maven-publish'
 }
 
 group = 'com.tars'
@@ -23,6 +24,7 @@ jar {
     enabled = true
     // common 모듈의 클래스들을 포함하지 않음 (의존성으로 사용)
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveClassifier = ''
 }
 
 dependencies {
@@ -61,4 +63,15 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 tasks.named('test') {
     useJUnitPlatform()
     ignoreFailures = true
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            groupId = 'com.tars'
+            artifactId = 'auth-module'
+            version = '0.0.1-SNAPSHOT'
+        }
+    }
 }

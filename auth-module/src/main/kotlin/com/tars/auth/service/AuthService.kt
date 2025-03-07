@@ -7,13 +7,15 @@ import com.tars.auth.dto.TokenResponse
 import com.tars.auth.exception.AuthenticationException
 import com.tars.auth.port.output.UserAuthPort
 import com.tars.common.error.ErrorMessage
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
+@Qualifier("authModuleAuthService")
 class AuthService(
-    private val userAuthPort: UserAuthPort,
-    private val tokenProvider: TokenProvider,
+    @Qualifier("appUserAuthAdapter") private val userAuthPort: UserAuthPort,
+    @Qualifier("authModuleTokenProvider") private val tokenProvider: TokenProvider,
     private val passwordEncoder: PasswordEncoder
 ) {
     /**
