@@ -1,6 +1,6 @@
 package com.tars.auth.service
 
-import com.tars.auth.port.UserAuthPort
+import com.tars.auth.port.output.UserAuthPort
 import com.tars.common.error.ErrorMessage
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails

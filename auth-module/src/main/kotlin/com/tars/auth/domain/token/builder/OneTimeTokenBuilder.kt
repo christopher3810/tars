@@ -1,5 +1,7 @@
 package com.tars.auth.domain.token.builder
 
+import com.tars.auth.domain.token.type.TokenClaim
+import com.tars.auth.domain.token.type.TokenType
 import io.jsonwebtoken.JwtBuilder
 import java.security.Key
 import java.util.UUID
@@ -39,6 +41,6 @@ class OneTimeTokenBuilder(
         builder.claim(TokenClaim.PURPOSE.value, purpose)
         
         // 고유 ID 추가 (토큰 추적에 사용)
-        builder.id(UUID.randomUUID().toString())
+        builder.setId(UUID.randomUUID().toString())
     }
 } 

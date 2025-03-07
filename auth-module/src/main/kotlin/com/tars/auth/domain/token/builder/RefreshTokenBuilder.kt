@@ -1,5 +1,7 @@
 package com.tars.auth.domain.token.builder
 
+import com.tars.auth.domain.token.type.TokenClaim
+import com.tars.auth.domain.token.type.TokenType
 import io.jsonwebtoken.JwtBuilder
 import java.security.Key
 import java.util.UUID
@@ -19,6 +21,6 @@ class RefreshTokenBuilder(
         builder.claim(TokenClaim.TYPE.value, TokenType.REFRESH.value)
         
         // 고유 ID 추가 (토큰 무효화에 사용 가능)
-        builder.id(UUID.randomUUID().toString())
+        builder.setId(UUID.randomUUID().toString())
     }
 } 

@@ -1,5 +1,7 @@
 package com.tars.auth.domain.token.builder
 
+import com.tars.auth.domain.token.type.TokenClaim
+import com.tars.auth.domain.token.type.TokenType
 import io.jsonwebtoken.JwtBuilder
 import java.security.Key
 

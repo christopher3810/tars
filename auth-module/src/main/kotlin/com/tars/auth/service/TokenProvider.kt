@@ -1,8 +1,8 @@
 package com.tars.auth.service
 
-import com.tars.auth.config.JwtConfig
+import com.tars.auth.adapter.config.JwtConfig
 import com.tars.auth.domain.token.builder.TokenBuilder
-import com.tars.auth.domain.token.builder.TokenPurpose
+import com.tars.auth.domain.token.type.TokenPurpose
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -11,7 +11,7 @@ import java.security.Key
 
 @Component
 class TokenProvider(
-    val jwtConfig: JwtConfig
+    private final val jwtConfig: JwtConfig
 ) {
     // 문자열을 바이트 배열로 변환하여 적절한 Key 인스턴스 생성
     private val key: Key = Keys.hmacShaKeyFor(jwtConfig.secret.toByteArray(Charsets.UTF_8))
