@@ -7,7 +7,7 @@ enum class TokenType(val value: String) {
     ACCESS("access"),
     REFRESH("refresh"),
     AUTHORIZATION("authorization"),
-    ONE_TIME("one-time");
+    ONE_TIME("one_time");
     
     companion object {
         fun fromValue(value: String): TokenType? {
