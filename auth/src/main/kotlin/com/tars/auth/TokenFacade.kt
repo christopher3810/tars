@@ -32,7 +32,7 @@ class TokenFacade(
         return tokenService.generateTokens(userInfo)
     }
 
-    /** 리프레시 토큰 갱신 */
+    /** 엑세스 토큰 갱신 */
     fun refreshToken(refreshToken: String): TokenResponse {
         return tokenService.refreshToken(refreshToken)
     }

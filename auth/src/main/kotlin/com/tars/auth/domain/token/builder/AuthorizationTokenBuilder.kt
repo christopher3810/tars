@@ -8,6 +8,7 @@ import java.security.Key
 /**
  * 권한 검증용 토큰 생성을 위한 빌더 구현체
  * 사용자의 역할과 권한 정보를 포함하는 토큰입니다.
+ * Access 시 사용하길 권장합니다.
  */
 class AuthorizationTokenBuilder(
     subject: String,
