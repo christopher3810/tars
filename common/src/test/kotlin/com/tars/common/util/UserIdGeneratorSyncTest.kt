@@ -1,9 +1,8 @@
 package com.tars.common.util
 
-import io.kotest.assertions.throwables.shouldThrow
+import com.tars.common.util.idGenerator.UserIdGeneratorSync
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.ints.shouldBeBetween
 import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.longs.shouldBeLessThanOrEqual

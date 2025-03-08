@@ -1,5 +1,7 @@
 package com.tars.common.util
 
+import com.tars.common.util.idGenerator.UserIdGeneratorCas
+import com.tars.common.util.idGenerator.UserIdGeneratorSync
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeBetween
