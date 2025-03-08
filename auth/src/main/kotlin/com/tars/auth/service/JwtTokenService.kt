@@ -22,20 +22,20 @@ class JwtTokenService(
      */
     fun generateTokens(userInfo: UserTokenInfo): TokenResponse {
         // 액세스 토큰 생성
-        val accessTokenBuilder = tokenProvider.createAuthorizationTokenBuilder(userInfo.email)
+        val authorizationTokenBuilder = tokenProvider.createAuthorizationTokenBuilder(userInfo.email)
             .withClaim(TokenClaim.USER_ID.value, userInfo.id)
         
         // 역할 정보가 있으면 추가
         if (userInfo.roles.isNotEmpty()) {
-            accessTokenBuilder.withClaim(TokenClaim.ROLES.value, userInfo.roles.joinToString(","))
+            authorizationTokenBuilder.withClaim(TokenClaim.ROLES.value, userInfo.roles.joinToString(","))
         }
         
         // 추가 클레임이 있으면 추가
         userInfo.additionalClaims.forEach { (key, value) ->
-            accessTokenBuilder.withClaim(key, value.toString())
+            authorizationTokenBuilder.withClaim(key, value.toString())
         }
         
-        val accessToken = accessTokenBuilder.build()
+        val accessToken = authorizationTokenBuilder.build()
         
         // 리프레시 토큰 생성
         val refreshToken = tokenProvider.createRefreshTokenBuilder(userInfo.email)
@@ -65,20 +65,20 @@ class JwtTokenService(
         val userInfo = getUserInfoFromToken(refreshToken)
         
         // 새 액세스 토큰 생성
-        val accessTokenBuilder = tokenProvider.createAuthorizationTokenBuilder(userInfo.email)
+        val authorizationTokenBuilder = tokenProvider.createAuthorizationTokenBuilder(userInfo.email)
             .withClaim(TokenClaim.USER_ID.value, userInfo.id)
         
         // 역할 정보가 있으면 추가
         if (userInfo.roles.isNotEmpty()) {
-            accessTokenBuilder.withClaim(TokenClaim.ROLES.value, userInfo.roles.joinToString(","))
+            authorizationTokenBuilder.withClaim(TokenClaim.ROLES.value, userInfo.roles.joinToString(","))
         }
         
         // 추가 클레임이 있으면 추가
         userInfo.additionalClaims.forEach { (key, value) ->
-            accessTokenBuilder.withClaim(key, value.toString())
+            authorizationTokenBuilder.withClaim(key, value.toString())
         }
         
-        val accessToken = accessTokenBuilder.build()
+        val accessToken = authorizationTokenBuilder.build()
         
         return TokenResponse(
             accessToken = accessToken,
