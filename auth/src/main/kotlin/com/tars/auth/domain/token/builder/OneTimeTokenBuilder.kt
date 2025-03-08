@@ -17,17 +17,6 @@ class OneTimeTokenBuilder(
     private val purpose: String
 ) : AbstractTokenBuilder(subject, expirationMs, key) {
     
-    companion object {
-        const val TOKEN_TYPE = "one-time"
-        const val CLAIM_PURPOSE = "purpose"
-        const val CLAIM_USED = "used"
-        
-        // 일회용 토큰 목적 상수
-        const val PURPOSE_EMAIL_VERIFICATION = "EMAIL_VERIFICATION"
-        const val PURPOSE_PASSWORD_RESET = "PASSWORD_RESET"
-        const val PURPOSE_ACCOUNT_ACTIVATION = "ACCOUNT_ACTIVATION"
-    }
-    
     init {
         // 기본적으로 사용되지 않은 상태로 초기화
         withClaim(TokenClaim.USED.value, false)
