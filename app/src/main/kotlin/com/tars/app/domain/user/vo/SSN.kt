@@ -1,12 +1,12 @@
 package com.tars.app.domain.user.vo
 
 import com.tars.common.error.ErrorMessage
-import com.tars.app.util.ValidationPatterns
+import com.tars.common.util.patternValidator.PatternValidator
 
 data class SSN private constructor(val value: String) {
     companion object {
         fun of(ssn: String): SSN {
-            require(ValidationPatterns.isValidSSN(ssn)) { ErrorMessage.INVALID_SSN_FORMAT.message }
+            require(PatternValidator.isValidSSN(ssn)) { ErrorMessage.INVALID_SSN_FORMAT.message }
             return SSN(ssn)
         }
         
@@ -23,7 +23,7 @@ data class SSN private constructor(val value: String) {
             
             require(maskedPrefix == originalPrefix) { "마스킹된 SSN과 원본 SSN의 접두사가 일치하지 않습니다." }
 
-            require(ValidationPatterns.isValidSSN(originalSsn)) { ErrorMessage.INVALID_SSN_FORMAT.message }
+            require(PatternValidator.isValidSSN(originalSsn)) { ErrorMessage.INVALID_SSN_FORMAT.message }
             
             return SSN(originalSsn)
         }

@@ -1,8 +1,8 @@
 package com.tars.app.domain.user.vo
 
 import com.tars.common.error.ErrorMessage
-import com.tars.app.util.MaskingUtil
-import com.tars.app.util.ValidationPatterns
+import com.tars.common.util.masking.MaskingUtil
+import com.tars.common.util.patternValidator.PatternValidator
 import org.springframework.security.crypto.bcrypt.BCrypt
 import java.time.LocalDate
 
@@ -23,10 +23,10 @@ data class UserCredentials private constructor(
             name: String,
             birthDate: LocalDate?
         ): UserCredentials {
-            require(ValidationPatterns.isValidEmail(email)) { ErrorMessage.INVALID_EMAIL_FORMAT.format(email) }
-            require(ValidationPatterns.isValidPassword(rawPassword)) { ErrorMessage.INVALID_PASSWORD_FORMAT.message }
-            require(ValidationPatterns.isValidSSN(ssn)) { ErrorMessage.INVALID_SSN_FORMAT.message }
-            require(ValidationPatterns.isValidPhoneNumber(phoneNumber)) { ErrorMessage.INVALID_PHONE_FORMAT.message }
+            require(PatternValidator.isValidEmail(email)) { ErrorMessage.INVALID_EMAIL_FORMAT.format(email) }
+            require(PatternValidator.isValidPassword(rawPassword)) { ErrorMessage.INVALID_PASSWORD_FORMAT.message }
+            require(PatternValidator.isValidSSN(ssn)) { ErrorMessage.INVALID_SSN_FORMAT.message }
+            require(PatternValidator.isValidPhoneNumber(phoneNumber)) { ErrorMessage.INVALID_PHONE_FORMAT.message }
             require(name.isNotBlank()) { ErrorMessage.BLANK_NAME.message }
 
             val hashedPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt())
@@ -48,9 +48,9 @@ data class UserCredentials private constructor(
             name: String,
             birthDate: LocalDate?
         ): UserCredentials {
-            require(ValidationPatterns.isValidEmail(email)) { ErrorMessage.INVALID_EMAIL_FORMAT.format(email) }
-            require(ValidationPatterns.isValidSSN(ssn)) { ErrorMessage.INVALID_SSN_FORMAT.message }
-            require(ValidationPatterns.isValidPhoneNumber(phoneNumber)) { ErrorMessage.INVALID_PHONE_FORMAT.message }
+            require(PatternValidator.isValidEmail(email)) { ErrorMessage.INVALID_EMAIL_FORMAT.format(email) }
+            require(PatternValidator.isValidSSN(ssn)) { ErrorMessage.INVALID_SSN_FORMAT.message }
+            require(PatternValidator.isValidPhoneNumber(phoneNumber)) { ErrorMessage.INVALID_PHONE_FORMAT.message }
             require(name.isNotBlank()) { ErrorMessage.BLANK_NAME.message }
 
             return UserCredentials(

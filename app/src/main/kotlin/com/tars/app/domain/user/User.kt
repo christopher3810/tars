@@ -2,7 +2,7 @@ package com.tars.app.domain.user
 
 import com.tars.common.error.ErrorMessage
 import com.tars.app.domain.user.vo.UserCredentials
-import com.tars.common.util.UserIdGeneratorCas
+import com.tars.common.util.idGenerator.UserIdGeneratorCas
 
 class User private constructor(
     val id: Long,

@@ -1,4 +1,4 @@
-package com.tars.common.util
+package com.tars.common.util.idGenerator
 
 import java.time.LocalTime
 import java.util.concurrent.atomic.AtomicReference

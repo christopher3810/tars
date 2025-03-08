@@ -1,12 +1,12 @@
 package com.tars.app.domain.user.vo
 
 import com.tars.common.error.ErrorMessage
-import com.tars.app.util.ValidationPatterns
+import com.tars.common.util.patternValidator.PatternValidator
 
 data class Email private constructor(val value: String) {
     companion object {
         fun of(email: String): Email {
-            require(ValidationPatterns.isValidEmail(email)) { ErrorMessage.INVALID_EMAIL_FORMAT.format(email) }
+            require(PatternValidator.isValidEmail(email)) { ErrorMessage.INVALID_EMAIL_FORMAT.format(email) }
             return Email(email)
         }
     }

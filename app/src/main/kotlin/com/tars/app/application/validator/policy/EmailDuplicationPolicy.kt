@@ -2,7 +2,7 @@ package com.tars.app.application.validator.policy
 
 import com.tars.app.application.validator.ValidationField
 import com.tars.app.outport.user.UserRepositoryPort
-import com.tars.app.util.MaskingUtil
+import com.tars.common.util.masking.MaskingUtil
 import org.springframework.stereotype.Component
 
 /**
