@@ -5,3 +5,4 @@ app/gradle/wrapper
 auth/build
 build/reports
 common/build
+build
