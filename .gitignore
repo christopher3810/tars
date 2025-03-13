@@ -1,8 +1,4 @@
-.idea
-app/gradle/wrapper
-.DS_Store
-.gradle
-auth/build
-build/reports
-common/build
 build
+.DS_Store
+.idea
+.gradle
